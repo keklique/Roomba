@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class GameManager : SingletonPersistent<GameManager>
 {
@@ -29,6 +30,17 @@ public class GameManager : SingletonPersistent<GameManager>
     private GameObject levelManager;
     [SerializeField]private float progressionPercent;
 
+    private Controller controller;
+    public bool isTouchStarted = false;
+    public bool isTouchEnded = true;
+
+
+    protected override void Awake(){
+        base.Awake();
+        controller = new Controller();
+        controller.Mouse.TouchPressed.started += ctx => TouchStarted(ctx);
+        controller.Mouse.TouchPressed.canceled += ctx => TouchEnded(ctx);
+    }
     void Start(){
         GetManagers();
         //workingParticleEffectofRobot = workingParticlesofRobot.GetComponent<ParticleSystem>();
@@ -37,17 +49,41 @@ public class GameManager : SingletonPersistent<GameManager>
     void Update(){
         if(levelManager.GetComponent<LevelManager>().currentLevelIndex!=0){
         DrawPath();
-        DrawingFinishCheck();
+        //DrawingFinishCheck();
         CleaningCheck();
         }
-        
     }
-
     void GetManagers(){
         UIManager= GameObject.FindWithTag("UIManager");
         UIManager.SendMessage("SetInıtialBatteryCapacity", batteryCapacity);
         soundManager= GameObject.FindWithTag("SoundManager");
         levelManager= GameObject.FindWithTag("LevelManager");
+    }
+
+    private void OnEnable()
+    {
+        controller.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controller.Disable();
+    }
+
+    void TouchStarted(InputAction.CallbackContext context)
+    {
+        isTouchStarted = true;
+        isTouchEnded = false;
+    }
+    void TouchEnded(InputAction.CallbackContext context)
+    {
+        isTouchStarted = false;
+        isTouchEnded = true;
+        if(isDrawing)
+        {
+            isDrawable = false;
+            isDrawing = false;
+        }
     }
     void CreatePath()
     {
@@ -55,8 +91,8 @@ public class GameManager : SingletonPersistent<GameManager>
         currentLine = Instantiate(pathofRobotPrefab,Vector3.zero,Quaternion.identity);
         lineRenderer= currentLine.GetComponent<LineRenderer>();
         mousePositions.Clear();
-        mousePositions.Add(MousetoWorldPosition(Input.mousePosition));
-        mousePositions.Add(MousetoWorldPosition(Input.mousePosition));
+        mousePositions.Add(MousetoWorldPosition(controller.Mouse.TouchPosition.ReadValue<Vector2>()));
+        mousePositions.Add(MousetoWorldPosition(controller.Mouse.TouchPosition.ReadValue<Vector2>()));
         lineRenderer.SetPosition(0,mousePositions[0]);
         lineRenderer.SetPosition(1,mousePositions[1]);
     }
@@ -86,13 +122,14 @@ public class GameManager : SingletonPersistent<GameManager>
     {
         if(isDrawable)
         {
-            if(Input.GetMouseButtonDown(0))
+            if(isTouchStarted)
             {
             CreatePath();
+            isTouchStarted = false;
             }
-            if(Input.GetMouseButton(0))
+            if(!isTouchEnded && isDrawing)
             {
-                Vector3 tempMousePosition = MousetoWorldPosition(Input.mousePosition);
+                Vector3 tempMousePosition = MousetoWorldPosition(controller.Mouse.TouchPosition.ReadValue<Vector2>());
                 if(Vector3.Distance(tempMousePosition,mousePositions[mousePositions.Count - 1 ])> .1f)
                 {
                     if(mousePositions.Count<batteryCapacity){
@@ -104,14 +141,14 @@ public class GameManager : SingletonPersistent<GameManager>
             }
         }
     }
-    void DrawingFinishCheck()
-    {
-        if(isDrawing && Input.GetMouseButtonUp(0))
-        {
-            isDrawable = false;
-            isDrawing = false;
-        }
-    }
+    // void DrawingFinishCheck()
+    // {
+    //     if(isDrawing && Input.GetMouseButtonUp(0))
+    //     {
+    //         isDrawable = false;
+    //         isDrawing = false;
+    //     }
+    // }
 
     void CleaningCheck()
     {

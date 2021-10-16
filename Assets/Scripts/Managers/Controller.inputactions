@@ -1,17 +1,17 @@
 {
-    "name": "PlayerControls",
+    "name": "Controller",
     "maps": [
         {
             "name": "Mouse",
             "id": "42f58bf6-7187-4a98-a7f5-4ebc04e72b94",
             "actions": [
                 {
-                    "name": "TouchInput",
+                    "name": "TouchPressed",
                     "type": "PassThrough",
                     "id": "3c738b88-ca22-4773-80c3-57cadc6882ad",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press(behavior=2)"
                 },
                 {
                     "name": "TouchPosition",
@@ -30,18 +30,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TouchInput",
+                    "action": "TouchPressed",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "e2805d24-6f71-45c0-824f-cc135895f736",
-                    "path": "<Touchscreen>/primaryTouch",
+                    "id": "06d5a37d-7017-42b1-a268-91e10cc413d3",
+                    "path": "<Touchscreen>/primaryTouch/press",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TouchInput",
+                    "action": "TouchPressed",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
