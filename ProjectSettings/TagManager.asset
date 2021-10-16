@@ -9,6 +9,9 @@ TagManager:
   - Garbage
   - UIManager
   - SoundManager
+  - LevelManager
+  - RobotParticle
+  - RobotExplosion
   layers:
   - Default
   - TransparentFX

@@ -14,12 +14,13 @@ public class Robot : MonoBehaviour
         gameManager= GameObject.FindWithTag("GameManager");
         UIManager= GameObject.FindWithTag("UIManager");
         soundManager= GameObject.FindWithTag("SoundManager");
+        RobotExplosion_Particle = transform.Find("RobotExplosion_Particle").gameObject;
     }
+
     void OnTriggerEnter(Collider other){
         if(other.gameObject.tag == "Garbage"){
             Destroy(other.gameObject);
             UIManager.SendMessage("ReduceRemainGarbages");
-            //SoundManager.sfxInstance.audioSource.PlayOneShot(SoundManager.sfxInstance.vacuumVacuumSound, .03F);
         }
 
         if(other.gameObject.tag == "HardObject"){
@@ -37,6 +38,7 @@ public class Robot : MonoBehaviour
 
         if(other.gameObject.tag == "HardObject"){
             gameManager.SendMessage("RobotCrashed");
+            soundManager.SendMessage("StopVacuumSound");
         }
     }
 

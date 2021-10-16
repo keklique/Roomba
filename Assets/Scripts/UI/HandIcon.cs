@@ -7,6 +7,9 @@ public class HandIcon : MonoBehaviour
     private float step = 1f;
     public int count;
 
+    void Start(){
+        step = Screen.height/1920f;
+    }
 
     void FixedUpdate(){
         if(count<100){

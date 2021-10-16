@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonPersistent<GameManager>
 {
@@ -10,13 +11,14 @@ public class GameManager : SingletonPersistent<GameManager>
     [SerializeField]private GameObject workingParticlesofRobot;
     [SerializeField]private ParticleSystem workingParticleEffectofRobot;
     [SerializeField]private float speedofRobot = 1f;
+    private float initialSpeedofRobot;
     private int pathPointIndex = 0;
     [SerializeField]private GameObject currentLine;
     [SerializeField]private LineRenderer lineRenderer;
     [SerializeField]private List<Vector3> mousePositions;
     private Plane basePlane;
-    public Vector3 hit;
-    public Ray ray;
+    private Vector3 hit;
+    private Ray ray;
     [SerializeField]private int batteryCapacity;
     bool isDrawable = true;
     bool isDrawing = false;
@@ -24,20 +26,28 @@ public class GameManager : SingletonPersistent<GameManager>
     private Vector3 target;
     private GameObject UIManager;
     private GameObject soundManager;
+    private GameObject levelManager;
     [SerializeField]private float progressionPercent;
 
     void Start(){
-
-        workingParticleEffectofRobot = workingParticlesofRobot.GetComponent<ParticleSystem>();
-        UIManager= GameObject.FindWithTag("UIManager");
-        UIManager.SendMessage("SetInıtialBatteryCapacity", batteryCapacity);
-        soundManager= GameObject.FindWithTag("SoundManager");
-
+        GetManagers();
+        //workingParticleEffectofRobot = workingParticlesofRobot.GetComponent<ParticleSystem>();
+        initialSpeedofRobot = speedofRobot;
     }
     void Update(){
+        if(levelManager.GetComponent<LevelManager>().currentLevelIndex!=0){
         DrawPath();
         DrawingFinishCheck();
         CleaningCheck();
+        }
+        
+    }
+
+    void GetManagers(){
+        UIManager= GameObject.FindWithTag("UIManager");
+        UIManager.SendMessage("SetInıtialBatteryCapacity", batteryCapacity);
+        soundManager= GameObject.FindWithTag("SoundManager");
+        levelManager= GameObject.FindWithTag("LevelManager");
     }
     void CreatePath()
     {
@@ -159,12 +169,12 @@ public class GameManager : SingletonPersistent<GameManager>
 
     void ReloadLevel()
     {
-        Debug.Log("Reloaded Level");
+        levelManager.SendMessage("ReloadLevel");
     }
 
-    void loadNextLevel()
+    void LoadNextLevel()
     {
-        Debug.Log("NextLevelLoaded");
+        levelManager.SendMessage("LoadNextLevel");
     }
 
     void MainMenu()
@@ -177,12 +187,27 @@ public class GameManager : SingletonPersistent<GameManager>
         workingParticleEffectofRobot.Stop();
         speedofRobot = 0f;
         UIManager.SendMessage("LevelFailed",2f);
+        soundManager.SendMessage("StopVacuumSound");
     }
 
     void ResetVaraibles(){
         isDrawable = true;
         isCleaningFinished = false;
+        pathPointIndex = 0;
+        robot = GameObject.FindWithTag("Player");
+        workingParticlesofRobot = GameObject.FindWithTag("RobotParticle");
+        workingParticleEffectofRobot = workingParticlesofRobot.GetComponent<ParticleSystem>();
+        target = Vector3.zero;
+        UIManager.SendMessage("SetInıtialBatteryCapacity", batteryCapacity);
+        speedofRobot = initialSpeedofRobot;
     }
+
+    // void GetRobot(){
+    //     robot = GameObject.FindWithTag("Player");
+    //     workingParticlesofRobot = GameObject.FindWithTag("VacuumParticle");
+    //     UIManager.SendMessage("ResetUI");
+    //     workingParticleEffectofRobot = workingParticlesofRobot.GetComponent<ParticleSystem>();
+    // }
 
 }
 

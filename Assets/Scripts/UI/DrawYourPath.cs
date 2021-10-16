@@ -12,7 +12,7 @@ public class DrawYourPath : MonoBehaviour
 
     void Update()
     {
-        if(transform.localScale.y<=1f){
+        if(transform.localScale.y<=.9f){
         transform.localScale = new Vector3(transform.localScale.x,transform.localScale.y + step*Time.deltaTime,transform.localScale.y);
         }
     }

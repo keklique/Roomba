@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class UIManager : SingletonPersistent<UIManager>
 {
+    [SerializeField]private GameObject mainCanvas;
     [SerializeField]private GameObject levelTextObject;
     [SerializeField]private GameObject progressionBar;
     private int initialGarbages;
@@ -12,12 +13,11 @@ public class UIManager : SingletonPersistent<UIManager>
     public float progressionPercent;
     [SerializeField]private GameObject[] garbages;
     [SerializeField]private GameObject[] stars;
+    [Header("Battery")]
     [SerializeField]private GameObject batteryBar;
     [SerializeField]private int initialBatteryCapacity;
     [SerializeField]private int remainBatteryCapacity;
     [SerializeField]private float batteryPercent;
-    private GameObject soundManager;
-    private GameObject gameManager;
 
     [Header("End Level Menu")]
     [SerializeField]private GameObject nextLevelButton;
@@ -26,27 +26,43 @@ public class UIManager : SingletonPersistent<UIManager>
     [SerializeField]private GameObject levelFailedImage;
     [SerializeField]private GameObject levelCopmletedImage;
 
+    [SerializeField]private GameObject tutorials;
+    [SerializeField]private GameObject mainMenu;
+    //MANAGERS
+    private GameObject soundManager;
+    private GameObject gameManager;
+    private GameObject levelManager;
+
 
     void Start(){
-        garbages = GameObject.FindGameObjectsWithTag("Garbage");
-        initialGarbages = garbages.Length;
-        remainGarbages = initialGarbages;
         soundManager = GameObject.FindWithTag("SoundManager");
         gameManager = GameObject.FindWithTag("GameManager");
+        levelManager = GameObject.FindWithTag("LevelManager");
+        DontDestroyOnLoad(mainCanvas);
     }
 
+    
+
     void Update(){
+        if(levelManager.GetComponent<LevelManager>().currentLevelIndex!=0){
         CalculateProgression();
         SetProgressionPercent();
         CheckStars();
         CalculateBattery();
         SetBatteryPercent();
+        }
+        
     }
 
     void SetLevelText(int level){
-        levelTextObject.GetComponent<TMPro.TextMeshProUGUI>().text = "Level " + level.ToString();
+        levelTextObject.GetComponent<TMPro.TextMeshProUGUI>().text = "Level " + (level).ToString();
     }
 
+    void InitiateGarbages(){
+        garbages = GameObject.FindGameObjectsWithTag("Garbage");
+        initialGarbages = garbages.Length;
+        remainGarbages = initialGarbages;
+    }
     void SetProgressionPercent(){
         progressionBar.GetComponent<Slider>().value = progressionPercent;
     }
@@ -105,7 +121,6 @@ public class UIManager : SingletonPersistent<UIManager>
         SoundManager.sfxInstance.audioSource.PlayOneShot(SoundManager.sfxInstance.failedSound,.7f);
     }
 
-
     void LevelCompleted(){
         SoundManager.sfxInstance.audioSource.PlayOneShot(SoundManager.sfxInstance.victorySound,.5f);
         levelCopmletedImage.SetActive(true);
@@ -117,10 +132,40 @@ public class UIManager : SingletonPersistent<UIManager>
     }
 
     public void NextLevel(){
-        gameManager.SendMessage("loadNextLevel");
+        gameManager.SendMessage("LoadNextLevel");
     }
 
     public void MainMenu(){
-        gameManager.SendMessage("MainMenu");
+        mainMenu.SetActive(true);
+    }
+
+    public void QuitGame(){
+        Application.Quit();
+    }
+
+    public void StartGame(){
+        levelManager.SendMessage("StartGame");
+        mainMenu.SetActive(false);
+    }
+
+    public void ResetUI(){
+        levelCopmletedImage.SetActive(false);
+        nextLevelButton.SetActive(false);
+        mainMenuButton.SetActive(false);
+        levelFailedImage.SetActive(false);
+        tryAgainButton.SetActive(false);
+        mainMenuButton.SetActive(false);
+        stars[0].SetActive(false);
+        stars[1].SetActive(false);
+        stars[2].SetActive(false);
+        InitiateGarbages();
+    }
+
+    void ActivateTutorials(){
+        tutorials.SetActive(true);
+    }
+
+    void SetActiveMainMenu(bool trueorfalse){
+        mainMenu.SetActive(trueorfalse);
     }
 }
