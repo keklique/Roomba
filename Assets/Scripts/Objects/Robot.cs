@@ -6,8 +6,8 @@ public class Robot : MonoBehaviour
 {
     private GameObject gameManager;
     private GameObject UIManager;
-    [SerializeField]private GameObject soundManager;
-    [SerializeField]private GameObject RobotExplosion_Particle;
+    private GameObject soundManager;
+   private GameObject RobotExplosion_Particle;
     private IEnumerator blowupCoroutine;
 
     void Start(){
@@ -30,21 +30,10 @@ public class Robot : MonoBehaviour
             StartCoroutine(blowupCoroutine);
             SoundManager.sfxInstance.audioSource.PlayOneShot(SoundManager.sfxInstance.crashWarningSound,.5f);
         }
-        
-        //SendMessage to SoundManager
-    }
-
-    void CollisionEnter(Collider other){
-
-        if(other.gameObject.tag == "HardObject"){
-            gameManager.SendMessage("RobotCrashed");
-            soundManager.SendMessage("StopVacuumSound");
-        }
     }
 
     private IEnumerator WaitAndBlowup(float waitTime)
     {
-        //soundManager play warning sound
         yield return new WaitForSeconds(waitTime);
         SoundManager.sfxInstance.audioSource.PlayOneShot(SoundManager.sfxInstance.blowupSound, .5f);
         yield return new WaitForSeconds(.1f);

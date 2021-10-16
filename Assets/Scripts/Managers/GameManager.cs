@@ -31,9 +31,8 @@ public class GameManager : SingletonPersistent<GameManager>
     [SerializeField]private float progressionPercent;
 
     private Controller controller;
-    public bool isTouchStarted = false;
-    public bool isTouchEnded = true;
-
+    private bool isTouchStarted = false;
+    private bool isTouchEnded = true;
 
     protected override void Awake(){
         base.Awake();
@@ -43,31 +42,25 @@ public class GameManager : SingletonPersistent<GameManager>
     }
     void Start(){
         GetManagers();
-        //workingParticleEffectofRobot = workingParticlesofRobot.GetComponent<ParticleSystem>();
         initialSpeedofRobot = speedofRobot;
     }
     void Update(){
         if(levelManager.GetComponent<LevelManager>().currentLevelIndex!=0){
         DrawPath();
-        //DrawingFinishCheck();
         CleaningCheck();
         }
+    }
+    private void OnEnable(){
+        controller.Enable();
+    }
+    private void OnDisable(){
+        controller.Disable();
     }
     void GetManagers(){
         UIManager= GameObject.FindWithTag("UIManager");
         UIManager.SendMessage("SetInıtialBatteryCapacity", batteryCapacity);
         soundManager= GameObject.FindWithTag("SoundManager");
         levelManager= GameObject.FindWithTag("LevelManager");
-    }
-
-    private void OnEnable()
-    {
-        controller.Enable();
-    }
-
-    private void OnDisable()
-    {
-        controller.Disable();
     }
 
     void TouchStarted(InputAction.CallbackContext context)
@@ -79,8 +72,7 @@ public class GameManager : SingletonPersistent<GameManager>
     {
         isTouchStarted = false;
         isTouchEnded = true;
-        if(isDrawing)
-        {
+        if(isDrawing){
             isDrawable = false;
             isDrawing = false;
         }
@@ -97,16 +89,13 @@ public class GameManager : SingletonPersistent<GameManager>
         lineRenderer.SetPosition(1,mousePositions[1]);
     }
 
-    void UpdatePath(Vector3 newMousePosition)
-    {
+    void UpdatePath(Vector3 newMousePosition){
         mousePositions.Add(newMousePosition);
         lineRenderer.positionCount++;
         lineRenderer.SetPosition(lineRenderer.positionCount - 1, newMousePosition);
     }
 
-    //
-    Vector3 MousetoWorldPosition(Vector3 mousePosition)
-    {
+    Vector3 MousetoWorldPosition(Vector3 mousePosition){
         Vector3 tempPlane = Vector3.zero;
         tempPlane.y = .204f;
         basePlane = new Plane(Vector3.up, tempPlane);
@@ -118,8 +107,7 @@ public class GameManager : SingletonPersistent<GameManager>
         return hit;
     }
 
-    void DrawPath()
-    {
+    void DrawPath(){
         if(isDrawable)
         {
             if(isTouchStarted)
@@ -141,17 +129,8 @@ public class GameManager : SingletonPersistent<GameManager>
             }
         }
     }
-    // void DrawingFinishCheck()
-    // {
-    //     if(isDrawing && Input.GetMouseButtonUp(0))
-    //     {
-    //         isDrawable = false;
-    //         isDrawing = false;
-    //     }
-    // }
 
-    void CleaningCheck()
-    {
+    void CleaningCheck(){
 
         if(!isDrawing && !isDrawable && !isCleaningFinished)
         {
@@ -162,8 +141,7 @@ public class GameManager : SingletonPersistent<GameManager>
     void Clean(){
         currentLine.SetActive(false);
         soundManager.SendMessage("PlayVacuumSound");
-        if(target==Vector3.zero)
-        {
+        if(target==Vector3.zero){
             workingParticleEffectofRobot.Play();
             target = mousePositions[0];
         }
@@ -171,10 +149,8 @@ public class GameManager : SingletonPersistent<GameManager>
         Vector3 dirofRobot = target - robot.transform.position;
         robot.transform.Translate(dirofRobot.normalized * speedofRobot * Time.deltaTime, Space.World);
 
-        if(Vector3.Distance(robot.transform.position,target) <=0.2f)
-        {
-            if(pathPointIndex != mousePositions.Count -1 )
-            {
+        if(Vector3.Distance(robot.transform.position,target) <=0.2f){
+            if(pathPointIndex != mousePositions.Count -1 ){
                 GetNextPathPoint();
             }
             else{
@@ -185,17 +161,13 @@ public class GameManager : SingletonPersistent<GameManager>
             }
         }
     }
-
-    void GetNextPathPoint()
-    {
+    void GetNextPathPoint(){
         pathPointIndex++;
         target = mousePositions[pathPointIndex];
         UIManager.SendMessage("ReduceRemainBattery");
     }
 
-    void LevelFinished()
-    {
-        
+    void LevelFinished(){
         progressionPercent= UIManager.GetComponent<UIManager>().progressionPercent;
         if(progressionPercent>=.5f){
             UIManager.SendMessage("LevelCompleted");
@@ -203,24 +175,7 @@ public class GameManager : SingletonPersistent<GameManager>
             UIManager.SendMessage("LevelFailed", .1f);
         }
     }
-
-    void ReloadLevel()
-    {
-        levelManager.SendMessage("ReloadLevel");
-    }
-
-    void LoadNextLevel()
-    {
-        levelManager.SendMessage("LoadNextLevel");
-    }
-
-    void MainMenu()
-    {
-        Debug.Log("Open main menu");
-    }
-
-    void RobotCrashed()
-    {
+    void RobotCrashed(){
         workingParticleEffectofRobot.Stop();
         speedofRobot = 0f;
         UIManager.SendMessage("LevelFailed",2f);
@@ -239,12 +194,4 @@ public class GameManager : SingletonPersistent<GameManager>
         speedofRobot = initialSpeedofRobot;
     }
 
-    // void GetRobot(){
-    //     robot = GameObject.FindWithTag("Player");
-    //     workingParticlesofRobot = GameObject.FindWithTag("VacuumParticle");
-    //     UIManager.SendMessage("ResetUI");
-    //     workingParticleEffectofRobot = workingParticlesofRobot.GetComponent<ParticleSystem>();
-    // }
-
 }
-

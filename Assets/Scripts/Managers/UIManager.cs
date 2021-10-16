@@ -33,15 +33,12 @@ public class UIManager : SingletonPersistent<UIManager>
     private GameObject gameManager;
     private GameObject levelManager;
 
-
     void Start(){
         soundManager = GameObject.FindWithTag("SoundManager");
         gameManager = GameObject.FindWithTag("GameManager");
         levelManager = GameObject.FindWithTag("LevelManager");
         DontDestroyOnLoad(mainCanvas);
     }
-
-    
 
     void Update(){
         if(levelManager.GetComponent<LevelManager>().currentLevelIndex!=0){
@@ -51,7 +48,6 @@ public class UIManager : SingletonPersistent<UIManager>
         CalculateBattery();
         SetBatteryPercent();
         }
-        
     }
 
     void SetLevelText(int level){
@@ -128,11 +124,11 @@ public class UIManager : SingletonPersistent<UIManager>
         mainMenuButton.SetActive(true);
     }
     public void TryAgain(){
-        gameManager.SendMessage("ReloadLevel");
+        levelManager.SendMessage("ReloadLevel");
     }
 
     public void NextLevel(){
-        gameManager.SendMessage("LoadNextLevel");
+        levelManager.SendMessage("LoadNextLevel");
     }
 
     public void MainMenu(){
@@ -164,7 +160,6 @@ public class UIManager : SingletonPersistent<UIManager>
     void ActivateTutorials(){
         tutorials.SetActive(true);
     }
-
     void SetActiveMainMenu(bool trueorfalse){
         mainMenu.SetActive(trueorfalse);
     }
