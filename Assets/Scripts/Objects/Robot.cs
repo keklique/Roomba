@@ -7,7 +7,7 @@ public class Robot : MonoBehaviour
     private GameObject gameManager;
     private GameObject UIManager;
     private GameObject soundManager;
-   private GameObject RobotExplosion_Particle;
+    private GameObject RobotExplosion_Particle;
     private IEnumerator blowupCoroutine;
 
     void Start(){

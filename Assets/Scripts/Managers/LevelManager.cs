@@ -6,18 +6,16 @@ using UnityEngine.SceneManagement;
 public class LevelManager : SingletonPersistent<LevelManager>
 {
     public int currentLevelIndex;
-
     private GameObject gameManager;
     private GameObject UIManager;
 
     void Start(){
         GetLastLevel();
         GetManagers();
-        UIManager.SendMessage("SetLevelText",currentLevelIndex);
     }
 
     void GetLastLevel(){
-        //For get last played level, yet only game starts from begin
+        //For get last played level, yet game starts from level1
         currentLevelIndex = 0;
     }
     void GetManagers(){
@@ -42,8 +40,6 @@ public class LevelManager : SingletonPersistent<LevelManager>
             ReloadLevel();
         }
     }
-
-
     void OnSceneLoaded(Scene scene, LoadSceneMode mode){
         gameManager.SendMessage("ResetVaraibles");
         UIManager.SendMessage("ResetUI");

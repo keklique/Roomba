@@ -61,6 +61,7 @@ public class UIManager : SingletonPersistent<UIManager>
         }
     }
 
+#region HEADER BAR
     void SetLevelText(int level){
         levelTextObject.GetComponent<TMPro.TextMeshProUGUI>().text = "Level " + (level).ToString();
     }
@@ -97,7 +98,8 @@ public class UIManager : SingletonPersistent<UIManager>
             SoundManager.sfxInstance.audioSource.PlayOneShot(SoundManager.sfxInstance.starSound,.5f);
         }
     }
-
+#endregion
+#region BATERY BAR
     void SetInıtialBatteryCapacity(int tempBattery){
         initialBatteryCapacity = tempBattery;
         remainBatteryCapacity = tempBattery;
@@ -113,7 +115,8 @@ public class UIManager : SingletonPersistent<UIManager>
     void SetBatteryPercent(){
         batteryBar.GetComponent<Slider>().value = batteryPercent;
     }
-
+#endregion
+#region GAME MANAGER
     void LevelFailed(float waitTime){
         StartCoroutine(LevelFailedCoroutine( waitTime));
     }
@@ -134,6 +137,8 @@ public class UIManager : SingletonPersistent<UIManager>
         nextLevelButton.SetActive(true);
         mainMenuButton.SetActive(true);
     }
+#endregion
+#region BUTTON METHODS
     public void TryAgain(){
         levelManager.SendMessage("ReloadLevel");
     }
@@ -178,7 +183,8 @@ public class UIManager : SingletonPersistent<UIManager>
             sound =true;
         }
     }
-
+#endregion
+#region LEVEL MANAGER
     public void ResetUI(){
         levelCopmletedImage.SetActive(false);
         nextLevelButton.SetActive(false);
@@ -191,13 +197,11 @@ public class UIManager : SingletonPersistent<UIManager>
         stars[2].SetActive(false);
         InitiateGarbages();
     }
-
     void ActivateTutorials(){
         tutorials.SetActive(true);
     }
     void SetActiveMainMenu(bool trueorfalse){
         mainMenu.SetActive(trueorfalse);
     }
-
-
+#endregion
 }
