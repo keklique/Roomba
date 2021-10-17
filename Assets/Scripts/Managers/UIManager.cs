@@ -28,6 +28,17 @@ public class UIManager : SingletonPersistent<UIManager>
 
     [SerializeField]private GameObject tutorials;
     [SerializeField]private GameObject mainMenu;
+
+    [SerializeField]private GameObject musicButton;
+    [SerializeField]private GameObject soundButton;
+    [SerializeField]private Sprite musicSprite;
+    [SerializeField]private Sprite musicMuteSprite;
+    [SerializeField]private Sprite soundSprite;
+    [SerializeField]private Sprite soundMuteSprite;
+
+    [SerializeField]private bool music = true;
+    [SerializeField]private bool sound=true;
+
     //MANAGERS
     private GameObject soundManager;
     private GameObject gameManager;
@@ -144,6 +155,30 @@ public class UIManager : SingletonPersistent<UIManager>
         mainMenu.SetActive(false);
     }
 
+    public void MusicMute(){
+        if(music){
+            soundManager.SendMessage("StopMusic");
+            musicButton.GetComponent<Image>().sprite = musicMuteSprite;
+            music =false;
+        }else{
+            musicButton.GetComponent<Image>().sprite = musicSprite;
+            soundManager.SendMessage("PlayMusic");
+            music =true;
+        }
+    }
+
+    public void SoundMute(){
+        if(sound){
+            //soundManager.SendMessage("StopSound");
+            soundButton.GetComponent<Image>().sprite = soundMuteSprite;
+            sound =false;
+        }else{
+            soundButton.GetComponent<Image>().sprite = soundSprite;
+            //soundManager.SendMessage("PlaySound");
+            sound =true;
+        }
+    }
+
     public void ResetUI(){
         levelCopmletedImage.SetActive(false);
         nextLevelButton.SetActive(false);
@@ -163,4 +198,6 @@ public class UIManager : SingletonPersistent<UIManager>
     void SetActiveMainMenu(bool trueorfalse){
         mainMenu.SetActive(trueorfalse);
     }
+
+
 }

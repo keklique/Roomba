@@ -21,19 +21,19 @@ public class GameManager : SingletonPersistent<GameManager>
     private Vector3 hit;
     private Ray ray;
     [SerializeField]private int batteryCapacity;
+    private Vector3 target;
+    [SerializeField]private float progressionPercent;
+    bool isTouchStarted = false;
+    bool isTouchEnded = true;
     bool isDrawable = true;
     bool isDrawing = false;
     bool isCleaningFinished = false;
-    private Vector3 target;
+    Controller controller;
     private GameObject UIManager;
     private GameObject soundManager;
     private GameObject levelManager;
-    [SerializeField]private float progressionPercent;
 
-    private Controller controller;
-    private bool isTouchStarted = false;
-    private bool isTouchEnded = true;
-
+#region BUILT IN METHODS
     protected override void Awake(){
         base.Awake();
         controller = new Controller();
@@ -56,13 +56,15 @@ public class GameManager : SingletonPersistent<GameManager>
     private void OnDisable(){
         controller.Disable();
     }
+
+#endregion
     void GetManagers(){
         UIManager= GameObject.FindWithTag("UIManager");
         UIManager.SendMessage("SetInıtialBatteryCapacity", batteryCapacity);
         soundManager= GameObject.FindWithTag("SoundManager");
         levelManager= GameObject.FindWithTag("LevelManager");
     }
-
+#region DRAWING
     void TouchStarted(InputAction.CallbackContext context)
     {
         isTouchStarted = true;
@@ -129,7 +131,8 @@ public class GameManager : SingletonPersistent<GameManager>
             }
         }
     }
-
+#endregion
+#region CLEANING 
     void CleaningCheck(){
 
         if(!isDrawing && !isDrawable && !isCleaningFinished)
@@ -166,7 +169,8 @@ public class GameManager : SingletonPersistent<GameManager>
         target = mousePositions[pathPointIndex];
         UIManager.SendMessage("ReduceRemainBattery");
     }
-
+#endregion
+#region CHECKING METHODS
     void LevelFinished(){
         progressionPercent= UIManager.GetComponent<UIManager>().progressionPercent;
         if(progressionPercent>=.5f){
@@ -181,7 +185,8 @@ public class GameManager : SingletonPersistent<GameManager>
         UIManager.SendMessage("LevelFailed",2f);
         soundManager.SendMessage("StopVacuumSound");
     }
-
+#endregion
+#region LEVEL METHODS
     void ResetVaraibles(){
         isDrawable = true;
         isCleaningFinished = false;
@@ -193,5 +198,5 @@ public class GameManager : SingletonPersistent<GameManager>
         UIManager.SendMessage("SetInıtialBatteryCapacity", batteryCapacity);
         speedofRobot = initialSpeedofRobot;
     }
-
+#endregion
 }

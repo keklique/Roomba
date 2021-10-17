@@ -7,6 +7,7 @@ public class SoundManager : SingletonPersistent<SoundManager>
     public static SoundManager sfxInstance;
     public AudioSource audioSource;
     public AudioSource vacuumAudioSource;
+    public AudioSource backgroundSource;
     public AudioClip vacuumIdleSound;
     public AudioClip vacuumVacuumSound;
     public AudioClip starSound;
@@ -14,6 +15,9 @@ public class SoundManager : SingletonPersistent<SoundManager>
     public AudioClip crashWarningSound;
     public AudioClip victorySound;
     public AudioClip failedSound;
+
+    private bool music = true;
+    private bool sound=true;
 
     void Start(){
         sfxInstance = this;
@@ -26,6 +30,26 @@ public class SoundManager : SingletonPersistent<SoundManager>
     void StopVacuumSound(){
         vacuumAudioSource.volume = 0f;
     }
+
+    void StopMusic(){
+        backgroundSource.enabled = false;
+    }
+
+    void PlayMusic(){
+        backgroundSource.enabled = true;
+    }
+
+    void StopSound(){
+        audioSource.enabled = false;
+        vacuumAudioSource.enabled = false;
+    }
+
+    void PlaySound(){
+        audioSource.enabled = true;
+        vacuumAudioSource.enabled = true;
+    }
+
+    
 
     
 
