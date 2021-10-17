@@ -180,10 +180,10 @@ public class GameManager : SingletonPersistent<GameManager>
         }
     }
     void RobotCrashed(){
+        soundManager.SendMessage("StopVacuumSound");
         workingParticleEffectofRobot.Stop();
         speedofRobot = 0f;
         UIManager.SendMessage("LevelFailed",2f);
-        soundManager.SendMessage("StopVacuumSound");
     }
 #endregion
 #region LEVEL METHODS

@@ -24,7 +24,7 @@ public class Robot : MonoBehaviour
         }
 
         if(other.gameObject.tag == "HardObject"){
-            soundManager.SendMessage("StopVacuumSound");
+            //soundManager.SendMessage("StopVacuumSound");
             gameManager.SendMessage("RobotCrashed");
             blowupCoroutine = WaitAndBlowup(1.261f);
             StartCoroutine(blowupCoroutine);
