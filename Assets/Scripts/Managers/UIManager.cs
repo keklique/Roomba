@@ -169,12 +169,12 @@ public class UIManager : SingletonPersistent<UIManager>
 
     public void SoundMute(){
         if(sound){
-            //soundManager.SendMessage("StopSound");
+            soundManager.SendMessage("StopSound");
             soundButton.GetComponent<Image>().sprite = soundMuteSprite;
             sound =false;
         }else{
             soundButton.GetComponent<Image>().sprite = soundSprite;
-            //soundManager.SendMessage("PlaySound");
+            soundManager.SendMessage("PlaySound");
             sound =true;
         }
     }
